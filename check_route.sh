@@ -79,6 +79,7 @@ for ip in "${!ip_as_map[@]}"; do
         # 检查是否包含 HKIX
         if echo "$line" | grep -q -i "hkix"; then
           hkix_found=true
+        fi
         # 检查是否包含 equinix
         if echo "$line" | grep -q -i "equinix"; then
           equinix_found=true
