@@ -89,7 +89,7 @@ for ip in "${!ip_as_map[@]}"; do
         fi
         # 如果提取到了AS号
         if [[ ! -z "$hop_as" ]]; then
-          echo "第$hop_count跳为AS$hop_as"
+          echo "第$hop_count跳为$hop_as"
           # 忽略第一跳
           ((hop_count++))
           if [[ $hop_count -eq 1 ]]; then
