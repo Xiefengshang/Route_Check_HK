@@ -54,7 +54,8 @@ for ip in "${!ip_as_map[@]}"; do
     retry_count=0
     is_valid="yes"
     hop_count=0
-    
+    hkix_found=false
+    equinix_found=false
     while [ $retry_count -lt $max_retries ]; do
       output=$(nexttrace $ip)
       
@@ -69,12 +70,19 @@ for ip in "${!ip_as_map[@]}"; do
       # 初始化变量
       hop_count=0
       is_valid="yes"
+
       
       # 逐行解析输出
       while IFS= read -r line; do
         # 提取AS号 (假设每一行都有AS号并且格式为 AS<number>)
         hop_as=$(echo "$line" | grep -oE "AS[0-9]+")
-        
+        # 检查是否包含 HKIX
+        if echo "$line" | grep -q "HKIX"; then
+          hkix_found=true
+        # 检查是否包含 equinix
+        if echo "$line" | grep -q "equinix"; then
+          equinix_found=true
+        fi
         # 如果提取到了AS号
         if [[ ! -z "$hop_as" ]]; then
           # 忽略第一跳
@@ -113,6 +121,14 @@ for ip in "${!ip_as_map[@]}"; do
     echo "结果: 到 $as_name 没有跨网"
   else
     echo "结果: 到 $as_name 存在跨网"
+  fi
+  # 输出 HKIX 检查结果
+  if $hkix_found; then
+    echo " 到 $as_name 发现 HKIX 节点"
+  fi
+  # 输出 equinix 检查结果
+  if $equinix_found; then
+    echo " 到 $as_name 发现 equinix 节点"
   fi
 done
 
