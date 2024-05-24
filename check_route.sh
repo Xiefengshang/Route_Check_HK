@@ -8,7 +8,7 @@ if ! command -v nexttrace &> /dev/null; then
   curl nxtrace.org/nt | bash
 fi
 
-echo "测试结果只能说明您的IPV4到目标IP没有跨网，不一定是接入了该线路，望周知"
+echo "测试结果只能说明您的IPV4到目标IP的路由表中没有跨网，不一定是接入了该线路，望周知"
 
 # 定义IP地址和对应的AS号及线路名称
 declare -A ip_as_map=(
@@ -37,6 +37,9 @@ declare -A as_name_map=(
   ["174"]="Cogent"
   ["9002"]="RETN"
 )
+# 定义存储结果的数组
+declare -a valid_ips
+declare -a invalid_ips
 
 # 定义重试次数
 max_retries=4
@@ -120,8 +123,10 @@ for ip in "${!ip_as_map[@]}"; do
 
   if $all_checks_valid; then
     echo "结果: 到 $as_name 没有跨网"
+    valid_ips+=("$ip ($as_name)")
   else
     echo "结果: 到 $as_name 存在跨网"
+    invalid_ips+=("$ip ($as_name)")
   fi
   # 输出 HKIX 检查结果
   if $hkix_found; then
@@ -131,6 +136,18 @@ for ip in "${!ip_as_map[@]}"; do
   if $equinix_found; then
     echo " 到 $as_name 发现 equinix 节点"
   fi
+done
+
+# 输出统计结果
+echo "统计结果:"
+echo "未跨网的线路有:"
+for valid_ip in "${valid_ips[@]}"; do
+  echo "  $valid_ip"
+done
+
+echo "跨网的线路有:"
+for invalid_ip in "${invalid_ips[@]}"; do
+  echo "  $invalid_ip"
 done
 
 if [ "$is_installed" == "1" ]; then
