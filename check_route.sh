@@ -43,7 +43,7 @@ declare -A as_name_map=(
 )
 
 # 定义重试次数
-max_retries=3
+max_retries=4
 
 # 遍历IP地址并进行nexttrace检查
 for ip in "${!ip_as_map[@]}"; do
@@ -54,7 +54,7 @@ for ip in "${!ip_as_map[@]}"; do
   # 初始化变量
   all_checks_valid=true
 
-  for check in {1..3}; do
+  for check in {1..5}; do
     retry_count=0
     is_valid="yes"
     hop_count=0
