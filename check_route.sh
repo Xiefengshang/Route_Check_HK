@@ -77,10 +77,10 @@ for ip in "${!ip_as_map[@]}"; do
         # 提取AS号 (假设每一行都有AS号并且格式为 AS<number>)
         hop_as=$(echo "$line" | grep -oE "AS[0-9]+")
         # 检查是否包含 HKIX
-        if echo "$line" | grep -q "HKIX"; then
+        if echo "$line" | grep -q -i "hkix"; then
           hkix_found=true
         # 检查是否包含 equinix
-        if echo "$line" | grep -q "equinix"; then
+        if echo "$line" | grep -q -i "equinix"; then
           equinix_found=true
         fi
         # 如果提取到了AS号
