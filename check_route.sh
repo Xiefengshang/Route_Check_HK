@@ -8,6 +8,8 @@ if ! command -v nexttrace &> /dev/null; then
   curl nxtrace.org/nt | bash
 fi
 
+echo "测试结果只能说明您的IPV4到目标IP没有跨网，不一定是接入了该线路，望周知"
+
 # 定义IP地址和对应的AS号及线路名称
 declare -A ip_as_map=(
   ["180.87.112.142"]="6453"
@@ -112,9 +114,9 @@ for ip in "${!ip_as_map[@]}"; do
   done
 
   if $all_checks_valid; then
-    echo "结果: 接入 $as_name"
+    echo "结果: 到 $as_name 没有跨网"
   else
-    echo "结果: 未接入 $as_name"
+    echo "结果: 到 $as_name 存在跨网"
   fi
 done
 
